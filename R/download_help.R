@@ -4,14 +4,14 @@
 # Version 0.1
 # Licence GPL v3
 
-.download <- function(aurl, filename) {
+.download <- function(aurl, filename,...) {
 	fn <- paste(tempfile(), ".download", sep="")
 	res <- utils::download.file(url=aurl, destfile=fn, method="auto", quiet = FALSE, mode = "wb", cacheOK = TRUE)
 	if (res == 0) {
 		w <- getOption("warn")
 		on.exit(options("warn" = w))
 		options("warn"=-1) 
-		if (! file.rename(fn, filename) ) { 
+		if (!file.rename(fn, filename) ) { 
 			# rename failed, perhaps because fn and filename refer to different devices
 			file.copy(fn, filename)
 			file.remove(fn)
@@ -61,5 +61,18 @@
 		b <- as.vector(t(matrix(aoi, ncol=2)))
 	}
 	paste(b, collapse=",")
+}
+
+
+
+# Simplified download wrappers
+.downloadCurl <- function(u, f, overwrite, ...) {
+  if (!overwrite & file.exists(f)) return()
+  curl::curl_download(u, destfile = fn, ...)
+}
+
+.downloadFile <- function(u, f, overwrite, ...) {
+  if (!overwrite & file.exists(f)) return()
+  download.file(u, f, ...)
 }
 
