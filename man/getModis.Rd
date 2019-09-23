@@ -37,6 +37,10 @@ If no data is available between \code{start_date} and \code{end_date}, files for
 
 \seealso{ \code{\link[luna]{getProducts}}}
 
+\references{
+\url{https://rspatial.org/terra/modis/}
+}
+
 \examples{  
 product <- "MOD09A1"
 sdate <- "2019-05-17" 
