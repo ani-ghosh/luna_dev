@@ -38,7 +38,7 @@ getAVHRR <- function(start_date, end_date, path = "", overwrite = FALSE, update 
   
   baseurl <- "https://www.ncei.noaa.gov/data/avhrr-land-normalized-difference-vegetation-index/access"
   # url to access 8 different ways of downloading the data
-  # baseulr <- "https://www.ncei.noaa.gov/thredds/catalog/cdr/ndvi/files"
+  # baseurl <- "https://www.ncei.noaa.gov/thredds/catalog/cdr/ndvi/files"
   path <- .getCleanPath(path)
   
   # list of AVHRR files
@@ -53,7 +53,6 @@ getAVHRR <- function(start_date, end_date, path = "", overwrite = FALSE, update 
   if(nrow(pp) == 0) {stop("No AVHRR file available for the date range provided")}
   
   # to store output file names
-  files <- list()
   
   for (i in 1:nrow(pp)){
     ff <- pp[i,]
@@ -75,14 +74,11 @@ getAVHRR <- function(start_date, end_date, path = "", overwrite = FALSE, update 
     
     if (!ok){
       cat("Downloading AVHRR tile for", as.character(ff$date), "\n")
-      .downloadFile(furl, filename, mode = "wb", overwrite, quiet = TRUE) 
-    } else {
-      cat("Listing AVHRR tile for", as.character(ff$date), "\n")
-    }
-
-    files[[i]] <- filename
+      ff <- try(.downloadFile(furl, filename, mode = "wb", overwrite, quiet = TRUE)) 
+    } 
+    
+    if (inherits(ff, "try-error")) next
   }
-  files <- unlist(files)
 }
 
 
@@ -96,3 +92,9 @@ getAVHRR <- function(start_date, end_date, path = "", overwrite = FALSE, update 
 # Create composite
 # Should it be a general reduce-type function
 
+# Not run
+# parallel loop over dates?
+# getAVHRR(start_date = "1980-01-01", end_date = "2019-09-29")
+# getAVHRR(start_date = "1990-01-01", end_date = "2019-09-29")
+# getAVHRR(start_date = "2000-01-01", end_date = "2019-09-29")
+# getAVHRR(start_date = "2010-01-01", end_date = "2019-09-29")
